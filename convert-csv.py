@@ -30,10 +30,13 @@ def createXML(file,xml):
                 child.text = value
             mydata = prettify(xml)
             filename = f"{row['dcterms:identifier']}.xml"
-            myfile = open(filename, 'w') # change outputfolder in argparse
-            myfile.write(mydata)
+            print(filename,mydata)
+
+def print(filename,data):
+    myfile = open(filename, 'w') # change outputfolder in argparse
+    myfile.write(str(data.decode('utf-8')))
+    myfile.close()
 
 # main
 file = 'testdata/voorbeeld_stuk.csv' # change in argparse
-xml = createRootXML()
-createXML(file,xml)
+createXML(file,createRootXML())
