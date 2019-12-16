@@ -1,27 +1,39 @@
+
+# imports
 import csv
-from xml.etree.ElementTree import Element, SubElement, Comment, tostring
+from xml.etree.ElementTree import Element, SubElement
 from ElementTree_pretty import prettify
+from argparse import ArgumentParser
 
-root = Element('record')
-root.set('xmlns', 'http://example.org/oudenburg-dc')
-root.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-root.set('xmlns:dcterms', 'http://purl.org/dc/terms/')
-root.set('xsi:schemaLocation', 'http://example.org/oudenburg-dc oudenburg-record.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd')
-child = SubElement(root,'child')
-child.text = 'I\'m a child'
+# constans
+XMLNS = 'http://example.org/oudenburg-dc'
+XSI = 'http://www.w3.org/2001/XMLSchema-instance'
+DCTERMS = 'http://purl.org/dc/terms/'
+SCHEMA = 'http://example.org/oudenburg-dc oudenburg-record.xsd http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd'
 
+# functions
+def createRootXML():
+    # TODO add elements of collection.xml
+    root = Element('record')
+    root.set('xmlns', XMLNS)
+    root.set('xmlns:xsi', XSI)
+    root.set('xmlns:dcterms', DCTERMS)
+    root.set('xsi:schemaLocation', SCHEMA)
+    return root
 
-file = 'VAI.csv'
+def createXML(file,xml):
+    with open(file, 'r') as csvfile:
+        csvreader = csv.DictReader(csvfile)
+        for row in csvreader:
+            for key, value in row.items():
+                child = SubElement(xml, key)
+                child.text = value
+            mydata = prettify(xml)
+            filename = f"{row['dcterms:identifier']}.xml"
+            myfile = open(filename, 'w') # change outputfolder in argparse
+            myfile.write(mydata)
 
-fields = []
-rows = []
-
-with open(file, 'r') as csvfile:
-    csvreader = csv.reader(csvfile)
-
-    fields = csvreader.next()
-
-    for row in csvreader:
-        rows.append(row)
-
-print(prettify(root))
+# main
+file = 'testdata/voorbeeld_stuk.csv' # change in argparse
+xml = createRootXML()
+createXML(file,xml)
