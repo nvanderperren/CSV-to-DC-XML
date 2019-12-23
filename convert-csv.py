@@ -48,7 +48,7 @@ def create_dc_xml(file, destination):
                     child = SubElement(xml, key)
                     child.text = value
             mydata = prettify(xml)
-            filename = f"{row['dcterms:identifier']}.xml"
+            filename = f'{row["dcterms:identifier"]}.xml'
             print_xml(os.path.join(destination,filename), mydata)
 
 def print_xml(filename, data):
