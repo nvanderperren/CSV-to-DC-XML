@@ -5,6 +5,7 @@ import csv
 from xml.etree.ElementTree import Element, SubElement
 from ElementTree_pretty import prettify
 from argparse import ArgumentParser
+import os
 
 # functions
 def create_base_xml(fieldnames):
@@ -36,7 +37,7 @@ def create_base_xml(fieldnames):
     root.set('xsi:schemaLocation', schema)
     return root
 
-def create_dc_xml(file):
+def create_dc_xml(file, destination):
     with open(file, 'r') as csvfile:
         csvreader = csv.DictReader(csvfile)
         xml = create_base_xml(csvreader.fieldnames)
@@ -48,13 +49,28 @@ def create_dc_xml(file):
                     child.text = value
             mydata = prettify(xml)
             filename = f"{row['dcterms:identifier']}.xml"
-            print_xml(filename, mydata)
+            print_xml(os.path.join(destination,filename), mydata)
 
 def print_xml(filename, data):
     myfile = open(filename, 'w') # change outputfolder in argparse
     myfile.write(str(data.decode('utf-8')))
     myfile.close()
 
-# main
-file = 'testdata/voorbeeld_collectie.csv' # change in argparse
-create_dc_xml(file)
+def check_path(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+def main(args):
+    file = args.csv
+    destination = ''
+    if args.dest:
+        destination = args.dest
+        check_path(destination)
+    create_dc_xml(file, destination)
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description = "Convert csv files to DC/XML files")
+    parser.add_argument('csv', help="CSV file to convert")
+    parser.add_argument('-d', '--dest', help="destination directory")
+    args = parser.parse_args()
+    main(args)
