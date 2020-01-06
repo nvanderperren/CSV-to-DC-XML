@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://example.org/oudenburg-dcds"
+  xmlns="http://example.org/oudenburg-dcds"
+  elementFormDefault="qualified">
+  <xs:import namespace="dcterms" schemaLocation="http://dublincore.org/schemas/xmls/qdc/dcterms.xsd"></xs:import>
+  <xs:element name="descriptionSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="description" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="description">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="http://purl.org/dc/terms/identifier"></xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
